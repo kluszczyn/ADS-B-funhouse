@@ -28,7 +28,7 @@ from threading import *
 import json
 import sbs1
 import icao24
-import sys, logging
+import sys, logging, traceback
 try:
   import remotelogger
 except ImportError:
