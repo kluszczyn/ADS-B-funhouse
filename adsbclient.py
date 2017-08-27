@@ -108,7 +108,7 @@ class Observation(object):
       self.callsign = sbs1Message.callsign
     if sbs1Message.altitude:
       self.altitude = sbs1Message.altitude
-    if sbs1Message.aquawk:
+    if sbs1Message.squawk:
       self.squawk = sbs1Message.squawk
     if sbs1Message.groundSpeed:
       self.groundSpeed = sbs1Message.groundSpeed
@@ -187,7 +187,7 @@ def cleanObservations(observations, timeoutSec, mqttc):
 
   return observations
 
-def mqttOnConnect(mosq, obj, rc):
+def mqttOnConnect(self, mosq, obj, rc):
   log.info("MQTT Connect: %s" % (str(rc)))
 
 def mqttOnDisconnect(mosq, obj, rc):
@@ -199,7 +199,7 @@ def mqttOnDisconnect(mosq, obj, rc):
       log.info("Attempting MQTT reconnect")
     log.info("MQTT connected")
 
-def mqttOnMessage(mosq, obj, msg):
+def mqttOnMessage(self, mosq, obj, msg):
   try:
     data = json.loads(msg.payload)
   except Exception as e:
@@ -237,7 +237,11 @@ def mqttConnect():
   global args
   global mqttc
   try:
-    mqttc = mosquitto.Mosquitto("adsbclient-%d" % (random.randint(0, 65535)))
+    if args.mqtt311_protocol:
+      ptcol = mosquitto.MQTTv311
+    else:
+      ptcol = mosquitto.MQTTv31
+    mqttc = mosquitto.Client("adsbclient-%d" % (random.randint(0, 65535)), protocol=ptcol)
     mqttc.on_message = mqttOnMessage
     mqttc.on_connect = mqttOnConnect
     mqttc.on_disconnect = mqttOnDisconnect
@@ -369,6 +373,7 @@ def main():
   parser.add_argument('-p', '--mqtt-port', type=int, help="MQTT broker port number (default 1883)", default=1883)
   parser.add_argument('-u', '--mqtt-user', help="MQTT broker user")
   parser.add_argument('-a', '--mqtt-password', help="MQTT broker password")
+  parser.add_argument('-o', '--mqtt311-protocol', action="store_true", help="Use MQTTv311 rather than default MQTTv31") 
   parser.add_argument('-H', '--dump1090-host', help="dump1090 hostname", default='127.0.0.1')
   parser.add_argument('-P', '--dump1090-port', type=int, help="dump1090 port number (default 30003)", default=30003)
   parser.add_argument('-v', '--verbose',  action="store_true", help="Verbose output")
