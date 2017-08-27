@@ -22,6 +22,7 @@ The MQTT publish topic is `/adsb/<radar name>/json` and the JSON data contains t
 | lost         | `true` if receiver lost sight of aircraft | `false`
 | track        | Track [degrees]                           | 131 
 | groundSpeed  | Ground speed [knots]                      | 413 
+| squawk       | SSR code assigned to the flight           | 3315
 | altitude     | Altitude [feet]                           | 17500 
 | lon          | Lontitudee                                | 13.33108 
 | lat          | Latitude                                  | 55.29126
@@ -39,6 +40,7 @@ The following arguments are supported by adsbclient.py:
 | --radar-name NAME    | name of radar, used as topic string /adsb/NAME/json
 | --mqtt-host HOST     | MQTT broker hostname
 | --mqtt-port PORT     | MQTT broker port number (default 1883)
+| --mqtt311-protocol   | Use MQTT protocol v3.1.1 rather than the default v3.1
 | --dump1090-host HOST | dump1090 hostname
 | --dump1090-port PORT | dump1090 port number (default 30003)
 | --verbose            | Verbose output
