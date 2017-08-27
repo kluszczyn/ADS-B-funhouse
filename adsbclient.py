@@ -77,6 +77,7 @@ class Observation(object):
     self.loggedDate = sbs1Message.loggedDate
     self.callsign = sbs1Message.callsign
     self.altitude = sbs1Message.altitude
+    self.squawk = sbs1Message.squawk
     self.groundSpeed = sbs1Message.groundSpeed
     self.track = sbs1Message.track
     self.lat = sbs1Message.lat
@@ -106,6 +107,8 @@ class Observation(object):
       self.callsign = sbs1Message.callsign
     if sbs1Message.altitude:
       self.altitude = sbs1Message.altitude
+    if sbs1Message.aquawk:
+      self.squawk = sbs1Message.squawk
     if sbs1Message.groundSpeed:
       self.groundSpeed = sbs1Message.groundSpeed
     if sbs1Message.track:
