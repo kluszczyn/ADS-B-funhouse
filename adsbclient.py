@@ -36,6 +36,7 @@ except ImportError:
   sys.exit(1)
 import datetime, calendar
 import signal
+import select
 import thread, threading
 import random
 import time
@@ -308,7 +309,7 @@ def adsbThread():
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.connect((args.dump1090_host, args.dump1090_port))
         log.info("ADSB connected")
-        sock.settimeout(socketTimeoutSec)
+        sock.setblocking(0)
         connWarn = False
       except socket.error as e:
         if not connWarn:
@@ -321,6 +322,13 @@ def adsbThread():
         observations = cleanObservations(observations, cleanTimeoutSec, mqttc)
         lastClean = datetime.datetime.utcnow()
         nextClean = datetime.datetime.utcnow() + datetime.timedelta(seconds=cleanIntervalSec)
+
+      ready = select.select([sock], [], [], socketTimeoutSec)
+      if not ready[0]:
+        # The socket doesn't have anything for us, so loop around
+        time.sleep(1)
+        continue
+
       try:
         data = sock.recv(512)
       except socket.error, e:
