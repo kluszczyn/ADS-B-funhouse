@@ -210,7 +210,7 @@ def proxyCheck(mosq, data):
       max_receiver_distance = distance
 
 
-def mqttOnConnect(mosq, obj, rc):
+def mqttOnConnect(mosq, obj, flags, rc):
   global args
   mosq.subscribe(args.radar, 0)
   log.debug("MQTT Connect: %s" % (str(rc)))
